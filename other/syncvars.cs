@@ -9,11 +9,18 @@ namespace testinggrounds
         public static Dictionary<string, Player> imposters = new Dictionary<string, Player>();
         public static void SetImposter(Player ply)
         {
-            // Show the new imposter who all of the other imposters are
+            ply.SetRole(RoleType.ChaosInsurgency)
+            foreach (var target in Player.List.Where(x => x != player))
+            {   
+                if(!imposters.Keys.Contains(target.UserId))
+                    SendFakeSyncVar(target, player.ReferenceHub.networkIdentity, typeof(CharacterClassManager), nameof(CharacterClassManager.NetworkCurClass), (sbyte)RoleType.ClassD);
+            }
             foreach (Player imposter in api.imposters.values)
             {
                 SendFakeSyncVar(ply, imposter.ReferenceHub.networkIdentity, typeof(CharacterClassManager), nameof(CharacterClassManager.NetworkCurClass), (sbyte)RoleType.ChaosInsurgency);
-                SendFakeSyncVar(imposter, ply.ReferenceHub.networkIdentity, typeof(CharacterClassManager), nameof(CharacterClassManager.NetworkCurClass), (sbyte)RoleType.ChaosInsurgency);            
+                //SendFakeSyncVar(imposter, ply.ReferenceHub.networkIdentity, typeof(CharacterClassManager), nameof(CharacterClassManager.NetworkCurClass), (sbyte)RoleType.ChaosInsurgency);            
             }
+            imposters.TryAdd(Player.UserId, ply);
+        }
     }
 }
